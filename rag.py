@@ -3,19 +3,19 @@ import faiss
 import numpy as np
 from langchain.text_splitter import CharacterTextSplitter
 import google.generativeai as genai
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+import time
+import streamlit as st # Import the streamlit library
 
 class RAGSystem:
     def __init__(self):
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
         self.index = None
         self.text_chunks = []
-        api_key = os.getenv("GOOGLE_API_KEY")
+        
+        # Access the API key using st.secrets
+        api_key = st.secrets["GOOGLE_API_KEY"]
         if not api_key:
-            raise ValueError("GOOGLE_API_KEY environment variable not set")
+            raise ValueError("GOOGLE_API_KEY secret not set in Streamlit")
         genai.configure(api_key=api_key)
         self.gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -51,3 +51,4 @@ class RAGSystem:
                     continue
                 return f"Error calling Gemini API: {str(e)}"
         return "Error: API rate limit exceeded"
+        
