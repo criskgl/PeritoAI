@@ -38,8 +38,14 @@ env/
 *~
 
 # Data directories (keep structure, ignore content)
+# Allow PDF files in policies and protocols directories
 data/policies/*
+!data/policies/*.pdf
 !data/policies/.gitkeep
+data/internal_protocol_coverage/*
+!data/internal_protocol_coverage/*.pdf
+!data/internal_protocol_coverage/.gitkeep
+# Ignore ChromaDB and reports
 data/chroma_db/*
 !data/chroma_db/.gitkeep
 data/reports/*
