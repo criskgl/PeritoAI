@@ -333,8 +333,14 @@ Causa: ROTURA DE TUBERIA EMPOTRADA""",
         
         if all_documents:
             # Separate documents by type
-            policies = [doc for doc in all_documents if doc["document_type"] == "póliza"]
-            protocols = [doc for doc in all_documents if doc["document_type"] == "protocolo"]
+            policies = [doc for doc in all_documents if doc.get("document_type") == "póliza"]
+            protocols = [doc for doc in all_documents if doc.get("document_type") == "protocolo"]
+            
+            # Debug info if no pólizas found (helps diagnose indexing issues)
+            if not policies and all_documents:
+                all_types = set(doc.get("document_type", "unknown") for doc in all_documents)
+                st.warning(f"⚠️ No se encontraron pólizas indexadas. Tipos de documentos encontrados: {all_types}")
+                st.info(f"ℹ️ Total documentos indexados: {len(all_documents)}. Asegúrate de haber indexado las pólizas desde la barra lateral.")
             
             # Search/filter input (reactive - updates as you type)
             search_term = st.text_input(
@@ -465,21 +471,13 @@ Causa: ROTURA DE TUBERIA EMPOTRADA""",
     
     # Form for report generation
     with st.form("report_form"):
-        # Template selection
-        available_templates = get_available_templates()
-        template_options = {tid: t["name"] for tid, t in available_templates.items()}
+        # Template selection - locked to "simplificado" for now
+        # TODO: Re-enable template selection UI in future
+        selected_template_id = "simplificado"  # Default template
         
-        selected_template_id = st.selectbox(
-            "📋 Plantilla de Informe",
-            options=list(template_options.keys()),
-            format_func=lambda x: template_options[x],
-            help="Selecciona la estructura del informe pericial",
-            index=0,  # Default to "completo"
-        )
-        
-        # Show template description and preview
+        # Show template info (locked)
         selected_template = get_template(selected_template_id)
-        st.caption(f"ℹ️ {selected_template['description']}")
+        st.info(f"📋 **Plantilla:** {selected_template['name']} - {selected_template['description']}")
         
         # Show template preview with sections
         sections = selected_template.get("sections", [])
@@ -488,13 +486,6 @@ Causa: ROTURA DE TUBERIA EMPOTRADA""",
             # Display sections in a nice format
             sections_text = " → ".join([f"**{sec}**" for sec in sections])
             st.markdown(sections_text)
-            
-            # Also show as numbered list in expander for more detail
-            with st.expander("👁️ Ver secciones detalladas", expanded=False):
-                for i, section in enumerate(sections, 1):
-                    st.markdown(f"**{i}. {section}**")
-        else:
-            st.info("No hay secciones definidas para esta plantilla.")
         
         st.divider()
         

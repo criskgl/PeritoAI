@@ -326,15 +326,18 @@ class RAGEngine:
                                     if doc_type == "protocolo":
                                         display_name = self.format_protocol_display_name(source)
                                     else:
+                                        # For pólizas, use the document_id as display name
                                         display_name = doc_id
                                     
-                                    documents_map[doc_id] = {
-                                        "document_id": doc_id,
-                                        "document_type": doc_type,
-                                        "display_name": display_name,
-                                        "source": source,
-                                        "source_dir": metadata.get("source_dir", ""),
-                                    }
+                                    # Only add if not already in map (avoid duplicates)
+                                    if doc_id not in documents_map:
+                                        documents_map[doc_id] = {
+                                            "document_id": doc_id,
+                                            "document_type": doc_type,
+                                            "display_name": display_name,
+                                            "source": source,
+                                            "source_dir": metadata.get("source_dir", ""),
+                                        }
                     return list(documents_map.values())
             
             # Fallback: Use similarity search with multiple generic queries
@@ -353,15 +356,18 @@ class RAGEngine:
                             if doc_type == "protocolo":
                                 display_name = self.format_protocol_display_name(source)
                             else:
+                                # For pólizas, use the document_id as display name
                                 display_name = doc_id
                             
-                            documents_map[doc_id] = {
-                                "document_id": doc_id,
-                                "document_type": doc_type,
-                                "display_name": display_name,
-                                "source": source,
-                                "source_dir": doc.metadata.get("source_dir", ""),
-                            }
+                            # Only add if not already in map (avoid duplicates)
+                            if doc_id not in documents_map:
+                                documents_map[doc_id] = {
+                                    "document_id": doc_id,
+                                    "document_type": doc_type,
+                                    "display_name": display_name,
+                                    "source": source,
+                                    "source_dir": doc.metadata.get("source_dir", ""),
+                                }
                 except Exception:
                     continue
             
