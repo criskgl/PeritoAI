@@ -1,0 +1,16 @@
+langchain>=0.1.0
+langchain-google-genai>=0.0.5
+# Note: google-generativeai is deprecated, but langchain-google-genai may still require it as a dependency
+# If you see deprecation warnings, they come from langchain-google-genai's dependencies
+langchain-text-splitters>=0.0.1
+langchain-community>=0.0.10
+langchain-core>=0.1.0
+chromadb>=0.4.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+streamlit>=1.28.0
+pymupdf>=1.23.0
+fpdf2>=2.7.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
